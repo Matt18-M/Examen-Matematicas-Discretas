@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
@@ -10,4 +5,32 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+model Course {
+  id         Int    @id @default(autoincrement())
+  name       String
+  day        String
+  startTime  String @map("start_time")
+  endTime    String @map("end_time")
+  modality   String
+  difficulty String
+  credits    Int
+
+  prerequisites Prerequisite[] @relation("CoursePrerequisites")
+  requiredFor   Prerequisite[] @relation("RequiredCourses")
+
+  @@map("courses")
+}
+
+model Prerequisite {
+  courseId Int @map("course_id")
+  prerequisiteCourseId Int @map("prerequisite_course_id")
+
+  course       Course @relation("CoursePrerequisites", fields: [courseId], references: [id])
+  prerequisite Course @relation("RequiredCourses", fields: [prerequisiteCourseId], references: [id])
+
+  @@id([courseId, prerequisiteCourseId])
+
+  @@map("prerequisites")
 }
