@@ -195,3 +195,78 @@ export const generarHorariosValidosController = async (req: Request, res: Respon
     }
 
 };
+
+// Generar horarios desde una configuración enviada por el cliente
+export const generarHorariosController = async (req: Request, res: Response): Promise<void> => {
+
+    try {
+
+        const {
+            numberOfCourses,
+            maximumCredits,
+            maximumDifficultCourses,
+            requiredCourses,
+            requiredModality,
+            avoidTimeConflicts,
+            validatePrerequisites,
+            completedCourses
+        } = req.body;
+
+        if (!numberOfCourses) {
+            res.status(400).json({
+                message: "Debe indicar el número de materias."
+            });
+            return;
+        }
+
+        const { materias } = await obtenerDatosHorario(numberOfCourses);
+
+        if (numberOfCourses > materias.length) {
+            res.status(400).json({
+                message: "La cantidad solicitada supera el número de materias registradas."
+            });
+            return;
+        }
+
+        const configuracion = {
+            id: 0,
+            numberOfCourses,
+            maximumCredits,
+            maximumDifficultCourses,
+            requiredCourses: requiredCourses ?? [],
+            requiredModality: requiredModality ?? "",
+            avoidTimeConflicts: avoidTimeConflicts ?? true,
+            validatePrerequisites: validatePrerequisites ?? true
+        };
+
+        const combinaciones = generarCombinaciones(materias, numberOfCourses);
+
+        const horariosEvaluados = combinaciones.map(combinacion => ({
+            materias: combinacion,
+            evaluacion: evaluarHorario(combinacion, configuracion, completedCourses ?? [])
+        }));
+
+        const horariosValidos = horariosEvaluados.filter(horario => horario.evaluacion.valido);
+
+        const horariosDescartados = horariosEvaluados.filter(horario => !horario.evaluacion.valido);
+
+        res.status(200).json({
+            totalMaterias: materias.length,
+            materiasPorHorario: numberOfCourses,
+            totalCombinaciones: combinaciones.length,
+            horariosValidos: horariosValidos.length,
+            horariosDescartados: horariosDescartados.length,
+            schedules: horariosEvaluados
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            message: "Error al generar los horarios."
+        });
+
+    }
+
+};

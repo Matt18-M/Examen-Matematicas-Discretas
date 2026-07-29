@@ -33,11 +33,18 @@ export const cumpleModalidad = (materias: Course[], modalidad: string): boolean 
 };
 
 // Validar prerrequisitos
-export const cumplePrerequisitos = (materias: Course[]): boolean => {
+export const cumplePrerequisitos = (materias: Course[], materiasAprobadas: string[] = []): boolean => {
 
-    const nombresMaterias = new Set(materias.map(materia => materia.name));
+    const materiasDisponibles = new Set([
+        ...materias.map(materia => materia.name),
+        ...materiasAprobadas
+    ]);
 
-    return materias.every(materia => materia.prerequisites.every(prerequisito => nombresMaterias.has(prerequisito)));
+    return materias.every(materia =>
+        materia.prerequisites.every(prerequisito =>
+            materiasDisponibles.has(prerequisito)
+        )
+    );
 
 };
 
@@ -47,8 +54,7 @@ export interface ResultadoEvaluacion {
 }
 
 // Evaluar horario
-export const evaluarHorario = (materias: Course[], configuracion: ScheduleConfig): ResultadoEvaluacion => {
-
+export const evaluarHorario = (materias: Course[], configuracion: ScheduleConfig, materiasAprobadas: string[] = []): ResultadoEvaluacion => {
     const razones: string[] = [];
 
     if (configuracion.avoidTimeConflicts && tieneCruceHorario(materias)) {
@@ -71,7 +77,7 @@ export const evaluarHorario = (materias: Course[], configuracion: ScheduleConfig
         razones.push("No cumple con la modalidad requerida.");
     }
 
-    if (configuracion.validatePrerequisites && !cumplePrerequisitos(materias)) {
+    if (configuracion.validatePrerequisites && !cumplePrerequisitos(materias, materiasAprobadas)) {
         razones.push("No cumple los prerrequisitos.");
     }
 
