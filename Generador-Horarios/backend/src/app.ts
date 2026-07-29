@@ -3,6 +3,7 @@ import cors from "cors";
 
 import courseRoutes from "./routes/course.routes.js";
 import scheduleConfigRoutes from "./routes/scheduleConfig.routes.js";
+import schedulerRoutes from "./routes/scheduler.routes.js";
 
 const app = express();
 
@@ -12,4 +13,6 @@ app.use(express.json());
 
 app.use("/courses", courseRoutes);
 app.use("/config", scheduleConfigRoutes);
+app.use("/scheduler", schedulerRoutes);
+
 export default app;
