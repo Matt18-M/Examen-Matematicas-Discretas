@@ -22,10 +22,7 @@ export const contarMateriasDificiles = (materias: Course[]): number => {
 };
 
 // Validar materias obligatorias
-export const cumpleMateriasObligatorias = (
-    materias: Course[],
-    materiasObligatorias: string[]
-): boolean => {
+export const cumpleMateriasObligatorias = (materias: Course[], materiasObligatorias: string[]): boolean => {
 
     return materiasObligatorias.every(
         obligatoria =>
@@ -37,10 +34,7 @@ export const cumpleMateriasObligatorias = (
 };
 
 // Validar modalidad
-export const cumpleModalidad = (
-    materias: Course[],
-    modalidad: string
-): boolean => {
+export const cumpleModalidad = (materias: Course[], modalidad: string): boolean => {
 
     if (!modalidad) {
         return true;
@@ -52,11 +46,27 @@ export const cumpleModalidad = (
 
 };
 
+// Validar prerrequisitos
+export const cumplePrerequisitos = (materias: Course[]): boolean => {
+
+    const nombresMaterias = new Set(
+        materias.map(
+            materia => materia.name
+        )
+    );
+
+    return materias.every(
+        materia =>
+            materia.prerequisites.every(
+                prerequisito =>
+                    nombresMaterias.has(prerequisito)
+            )
+    );
+
+};
+
 // Validar toda la combinación
-export const esHorarioValido = (
-    materias: Course[],
-    configuracion: ScheduleConfig
-): boolean => {
+export const esHorarioValido = (materias: Course[], configuracion: ScheduleConfig): boolean => {
 
     if (
         configuracion.avoidTimeConflicts &&
@@ -93,6 +103,13 @@ export const esHorarioValido = (
             materias,
             configuracion.requiredModality
         )
+    ) {
+        return false;
+    }
+
+    if (
+        configuracion.validatePrerequisites &&
+        !cumplePrerequisitos(materias)
     ) {
         return false;
     }

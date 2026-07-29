@@ -8,40 +8,41 @@ export interface CreateCourseDTO {
     modality: string;
     difficulty: string;
     credits: number;
+    prerequisites: string[];
 }
 
 // Crear materia
 export const createCourse = async (data: CreateCourseDTO) => {
     return await prisma.course.create({
-    data,
-});
+        data
+    });
 };
 
 // Obtener todas las materias
 export const getCourses = async () => {
     return await prisma.course.findMany({
-    orderBy: { id: "asc"},
-});
+        orderBy: { id: "asc" }
+    });
 };
 
 // Obtener una materia por ID
 export const getCourseById = async (id: number) => {
     return await prisma.course.findUnique({
-    where: {id},
-});
+        where: { id }
+    });
 };
 
 // Actualizar una materia
-export const updateCourse = async ( id: number,data: CreateCourseDTO) => {
+export const updateCourse = async (id: number, data: CreateCourseDTO) => {
     return await prisma.course.update({
-    where: {id},
-    data,
-});
+        where: { id },
+        data
+    });
 };
 
 // Eliminar una materia
 export const deleteCourse = async (id: number) => {
     return await prisma.course.delete({
-    where: {id},
-});
+        where: { id }
+    });
 };

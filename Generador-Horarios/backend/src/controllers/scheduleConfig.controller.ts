@@ -3,10 +3,7 @@ import { type Request, type Response } from "express";
 import { createScheduleConfig, getScheduleConfigs, getScheduleConfigById, updateScheduleConfig, deleteScheduleConfig } from "../services/scheduleConfig.service.js";
 
 // Crear configuración
-export const createScheduleConfigController = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const createScheduleConfigController = async ( req: Request, res: Response ): Promise<void> => {
   try {
     const config = await createScheduleConfig(req.body);
 
@@ -21,10 +18,7 @@ export const createScheduleConfigController = async (
 };
 
 // Obtener todas las configuraciones
-export const getScheduleConfigsController = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const getScheduleConfigsController = async ( req: Request, res: Response ): Promise<void> => {
   try {
     const configs = await getScheduleConfigs();
 
@@ -39,10 +33,7 @@ export const getScheduleConfigsController = async (
 };
 
 // Obtener una configuración
-export const getScheduleConfigByIdController = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const getScheduleConfigByIdController = async ( req: Request, res: Response ): Promise<void> => {
   try {
     const id = Number(req.params.id);
 
@@ -67,10 +58,7 @@ export const getScheduleConfigByIdController = async (
 };
 
 // Actualizar configuración
-export const updateScheduleConfigController = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const updateScheduleConfigController = async ( req: Request, res: Response ): Promise<void> => {
   try {
     const id = Number(req.params.id);
 
@@ -97,10 +85,7 @@ export const updateScheduleConfigController = async (
 };
 
 // Eliminar configuración
-export const deleteScheduleConfigController = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const deleteScheduleConfigController = async ( req: Request, res: Response ): Promise<void> => {
   try {
     const id = Number(req.params.id);
 

@@ -6,10 +6,7 @@ import { esHorarioValido } from "../algorithms/rules.js";
 import { obtenerDatosHorario } from "../services/scheduler.service.js";
 
 // Calcular número de combinaciones
-export const calcularNumeroCombinacionesController = async (
-    req: Request,
-    res: Response
-): Promise<void> => {
+export const calcularNumeroCombinacionesController = async ( req: Request, res: Response ): Promise<void> => {
 
     try {
 
@@ -42,10 +39,7 @@ export const calcularNumeroCombinacionesController = async (
 };
 
 // Generar combinaciones
-export const generarCombinacionesController = async (
-    req: Request,
-    res: Response
-): Promise<void> => {
+export const generarCombinacionesController = async ( req: Request, res: Response ): Promise<void> => {
 
     try {
 
@@ -82,10 +76,7 @@ export const generarCombinacionesController = async (
 };
 
 // Analizar conjunto
-export const analizarConjuntoController = async (
-    req: Request,
-    res: Response
-): Promise<void> => {
+export const analizarConjuntoController = async ( req: Request, res: Response ): Promise<void> => {
 
     try {
 
@@ -118,10 +109,7 @@ export const analizarConjuntoController = async (
 };
 
 // Generar combinaciones de materias
-export const generarCombinacionesMateriasController = async (
-    req: Request,
-    res: Response
-): Promise<void> => {
+export const generarCombinacionesMateriasController = async ( req: Request, res: Response ): Promise<void> => {
 
     try {
 
@@ -160,10 +148,7 @@ export const generarCombinacionesMateriasController = async (
 };
 
 // Generar horarios válidos
-export const generarHorariosValidosController = async (
-    req: Request,
-    res: Response
-): Promise<void> => {
+export const generarHorariosValidosController = async ( req: Request, res: Response ): Promise<void> => {
 
     try {
 
