@@ -1,12 +1,6 @@
 import { type Request, type Response } from "express";
 
-import {
-  createScheduleConfig,
-  getScheduleConfigs,
-  getScheduleConfigById,
-  updateScheduleConfig,
-  deleteScheduleConfig
-} from "../services/scheduleConfig.service.js";
+import { createScheduleConfig, getScheduleConfigs, getScheduleConfigById, updateScheduleConfig, deleteScheduleConfig } from "../services/scheduleConfig.service.js";
 
 // Crear configuración
 export const createScheduleConfigController = async (

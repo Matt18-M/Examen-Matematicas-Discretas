@@ -18,3 +18,38 @@ export const calculateCombinationCount = (
 
   return factorial(n) / (factorial(r) * factorial(n - r));
 };
+
+// Generar todas las combinaciones
+export const generateCombinations = <T>(
+  items: T[],
+  size: number
+): T[][] => {
+
+  if (size === 0) {
+    return [[]];
+  }
+
+  if (items.length < size) {
+    return [];
+  }
+
+  const combinations: T[][] = [];
+
+  items.forEach((item, index) => {
+
+    const remaining = items.slice(index + 1);
+
+    const subCombinations = generateCombinations(
+      remaining,
+      size - 1
+    );
+
+    subCombinations.forEach(subCombination => {
+      combinations.push([item, ...subCombination]);
+    });
+
+  });
+
+  return combinations;
+
+};

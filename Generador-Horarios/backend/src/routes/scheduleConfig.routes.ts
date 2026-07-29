@@ -1,12 +1,6 @@
 import { Router } from "express";
 
-import {
-  createScheduleConfigController,
-  getScheduleConfigsController,
-  getScheduleConfigByIdController,
-  updateScheduleConfigController,
-  deleteScheduleConfigController
-} from "../controllers/scheduleConfig.controller.js";
+import { createScheduleConfigController, getScheduleConfigsController, getScheduleConfigByIdController, updateScheduleConfigController, deleteScheduleConfigController } from "../controllers/scheduleConfig.controller.js";
 
 const router = Router();
 
