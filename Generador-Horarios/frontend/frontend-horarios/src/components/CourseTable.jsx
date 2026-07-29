@@ -1,4 +1,4 @@
-function CourseTable({ courses }){
+function CourseTable({ courses,onEditar,onEliminar }){
 
     return(
 
@@ -68,15 +68,21 @@ function CourseTable({ courses }){
 
                                     <td>{course.credits}</td>
 
-                                    <td>
+                                    <td className="actions">
 
-                                        <button className="btn-edit">
+                                        <button
+                                            className="btn-edit"
+                                            onClick={()=>onEditar(course)}
+                                        >
 
                                             Editar
 
                                         </button>
 
-                                        <button className="btn-delete">
+                                        <button
+                                            className="btn-delete"
+                                            onClick={()=>onEliminar(course.id)}
+                                        >
 
                                             Eliminar
 
