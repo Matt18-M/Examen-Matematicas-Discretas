@@ -17,20 +17,18 @@ model Course {
   difficulty String
   credits    Int
 
-  prerequisites Prerequisite[] @relation("CoursePrerequisites")
-  requiredFor   Prerequisite[] @relation("RequiredCourses")
-
   @@map("courses")
 }
 
-model Prerequisite {
-  courseId Int @map("course_id")
-  prerequisiteCourseId Int @map("prerequisite_course_id")
+model ScheduleConfig {
+  id                      Int      @id @default(autoincrement())
+  numberOfCourses         Int      @map("number_of_courses")
+  maximumCredits          Int      @map("maximum_credits")
+  maximumDifficultCourses Int      @map("maximum_difficult_courses")
+  requiredCourses         String[] @map("required_courses")
+  requiredModality        String   @map("required_modality")
+  avoidTimeConflicts      Boolean  @default(true) @map("avoid_time_conflicts")
+  validatePrerequisites   Boolean  @default(true) @map("validate_prerequisites")
 
-  course       Course @relation("CoursePrerequisites", fields: [courseId], references: [id])
-  prerequisite Course @relation("RequiredCourses", fields: [prerequisiteCourseId], references: [id])
-
-  @@id([courseId, prerequisiteCourseId])
-
-  @@map("prerequisites")
+  @@map("schedule_config")
 }
