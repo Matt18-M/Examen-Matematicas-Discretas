@@ -1,0 +1,20 @@
+:root{
+
+    --color-primario:#2563eb;
+    --color-secundario:#3b82f6;
+    --color-acento:#60a5fa;
+
+    --color-fondo:#f4f7fb;
+    --color-blanco:#ffffff;
+
+    --color-texto:#1e293b;
+    --color-texto-secundario:#64748b;
+
+    --color-exito:#16a34a;
+    --color-error:#dc2626;
+
+    --sombra:0 8px 25px rgba(0,0,0,.08);
+
+    --radio:12px;
+
+}
