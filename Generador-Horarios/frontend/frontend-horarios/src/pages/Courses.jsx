@@ -8,74 +8,74 @@ import api from "../services/api";
 
 import "../styles/courses.css";
 
-function Courses(){
+function Courses() {
 
-    const [courses,setCourses]=useState([]);
-    const [courseEdit,setCourseEdit]=useState(null);
+    const [courses, setCourses] = useState([]);
+    const [courseEdit, setCourseEdit] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
-    const obtenerMaterias=async()=>{
+    const manejarError = (error) => {
 
-        try{
+        console.error(error);
 
-            const respuesta=await api.get("/courses");
+        setError("Ocurrió un error al comunicarse con el servidor.");
 
-            setCourses(respuesta.data);
+    };
+
+    const obtenerMaterias = async () => {
+
+        try {
+
+            setLoading(true);
+
+            setError("");
+
+            const { data } = await api.get("/courses");
+
+            setCourses(data);
 
         }
 
-        catch(error){
+        catch (error) {
 
-            console.error(error);
+            manejarError(error);
+
+        }
+
+        finally {
+
+            setLoading(false);
 
         }
 
     };
 
-    const guardarMateria=async(datos)=>{
+    const guardarMateria = async (course) => {
 
-        try{
+        try {
 
-            await api.post("/courses",{
-
-                ...datos,
-
-                credits:Number(datos.credits),
-
-                prerequisites:datos.prerequisites
-                    .split(",")
-                    .map(item=>item.trim())
-                    .filter(item=>item!=="")
-
-            });
+            await api.post("/courses", course);
 
             await obtenerMaterias();
 
         }
 
-        catch(error){
+        catch (error) {
 
-            console.error(error);
+            manejarError(error);
 
         }
 
     };
 
-    const actualizarMateria=async(datos)=>{
+    const actualizarMateria = async (course) => {
 
-        try{
+        if (!courseEdit) return;
 
-            await api.put(`/courses/${courseEdit.id}`,{
+        try {
 
-                ...datos,
-
-                credits:Number(datos.credits),
-
-                prerequisites:datos.prerequisites
-                    .split(",")
-                    .map(item=>item.trim())
-                    .filter(item=>item!=="")
-
-            });
+            await api.put(`/courses/${courseEdit.id}`, course);
 
             setCourseEdit(null);
 
@@ -83,25 +83,21 @@ function Courses(){
 
         }
 
-        catch(error){
+        catch (error) {
 
-            console.error(error);
+            manejarError(error);
 
         }
 
     };
 
-    const eliminarMateria=async(id)=>{
+    const eliminarMateria = async (id) => {
 
-        try{
-
-            const confirmar=window.confirm("¿Desea eliminar esta materia?");
-
-            if(!confirmar)return;
+        try {
 
             await api.delete(`/courses/${id}`);
 
-            if(courseEdit?.id===id){
+            if (courseEdit?.id === id) {
 
                 setCourseEdit(null);
 
@@ -111,80 +107,191 @@ function Courses(){
 
         }
 
-        catch(error){
+        catch (error) {
 
-            console.error(error);
+            manejarError(error);
 
         }
 
     };
 
-    useEffect(()=>{
+    useEffect(() => {
 
         obtenerMaterias();
 
-    },[]);
+    }, []);
 
-    return(
+    if (loading) {
+
+        return (
+
+            <>
+
+                <Navbar />
+
+                <main className="courses-page">
+
+                    <section className="courses-loading">
+
+                        <div className="loading-spinner"></div>
+
+                        <h3>
+
+                            Cargando materias...
+
+                        </h3>
+
+                    </section>
+
+                </main>
+
+            </>
+
+        );
+
+    }
+
+    const totalCreditos = courses.reduce(
+
+        (t, c) => t + c.credits,
+
+        0
+
+    );
+
+    const totalAlta = courses.filter(
+
+        c => c.difficulty === "Alta"
+
+    ).length;
+
+    return (
 
         <>
 
-            <Navbar/>
+            <Navbar />
 
-            <div className="courses-container">
+            <main className="courses-page">
 
-                <div className="page-header">
+                <section className="courses-hero">
 
-                    <h1>Administración de Materias</h1>
+                    <span className="courses-badge">
 
-                    <p>Registra, edita y elimina las materias.</p>
+                        Gestión Académica
 
-                </div>
+                    </span>
 
-                <div className="stats">
+                    <h1>
 
-                    <div className="stat-card">
-                        <h2>{courses.length}</h2>
-                        <p>Materias</p>
+                        Administración de Materias
+
+                    </h1>
+
+                    <p>
+
+                        Registre, edite y administre todas las materias que
+                        utilizará el algoritmo para generar horarios
+                        automáticamente.
+
+                    </p>
+
+                </section>
+
+                {
+
+                    error && (
+
+                        <div className="courses-error">
+
+                            {error}
+
+                        </div>
+
+                    )
+
+                }
+
+                <section className="courses-stats">
+
+                    <div className="courses-stat">
+
+                        <div className="courses-stat-number">
+
+                            {courses.length}
+
+                        </div>
+
+                        <div className="courses-stat-title">
+
+                            Materias Registradas
+
+                        </div>
+
                     </div>
 
-                    <div className="stat-card">
-                        <h2>{courses.filter(course=>course.difficulty==="Alta").length}</h2>
-                        <p>Dificultad Alta</p>
-                    </div>
+                    <div className="courses-stat">
 
-                    <div className="stat-card">
-                        <h2>{courses.reduce((total,course)=>total+course.credits,0)}</h2>
-                        <p>Total Créditos</p>
-                    </div>
+                        <div className="courses-stat-number">
 
-                </div>
+                            {totalAlta}
 
-                <div className="courses-grid">
+                        </div>
 
-                    <div className="card">
+                        <div className="courses-stat-title">
 
-                        <CourseForm
-                            onGuardar={guardarMateria}
-                            onActualizar={actualizarMateria}
-                            courseEdit={courseEdit}
-                        />
+                            Dificultad Alta
+
+                        </div>
 
                     </div>
 
-                    <div className="card">
+                    <div className="courses-stat">
 
-                        <CourseTable
-                            courses={courses}
-                            onEditar={setCourseEdit}
-                            onEliminar={eliminarMateria}
-                        />
+                        <div className="courses-stat-number">
+
+                            {totalCreditos}
+
+                        </div>
+
+                        <div className="courses-stat-title">
+
+                            Créditos Totales
+
+                        </div>
 
                     </div>
 
-                </div>
+                </section>
 
-            </div>
+                <section className="courses-form-section">
+
+                    <CourseForm
+
+                        onGuardar={guardarMateria}
+
+                        onActualizar={actualizarMateria}
+
+                        courseEdit={courseEdit}
+
+                    />
+
+                </section>
+
+                <section className="courses-table-section">
+
+                    <CourseTable
+
+                        courses={courses}
+
+                        onEditar={setCourseEdit}
+
+                        onEliminar={eliminarMateria}
+
+                    />
+
+                </section>
+
+            </main>
 
         </>
 

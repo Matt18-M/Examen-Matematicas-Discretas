@@ -1,24 +1,20 @@
 import ScheduleCard from "./ScheduleCard";
 
-function ScheduleList({ schedules }){
+function ScheduleList({ schedules }) {
 
-    return(
+    return (
 
         <div className="schedule-list">
 
-            {
+            {schedules.map((schedule, index) => (
 
-                schedules.map((schedule,index)=>(
+                <ScheduleCard
+                    key={index}
+                    number={index + 1}
+                    schedule={schedule}
+                />
 
-                    <ScheduleCard
-                        key={index}
-                        schedule={schedule}
-                        number={index+1}
-                    />
-
-                ))
-
-            }
+            ))}
 
         </div>
 

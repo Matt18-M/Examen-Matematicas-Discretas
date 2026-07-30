@@ -4,6 +4,8 @@ import Home from "./pages/Home";
 import Courses from "./pages/Courses";
 import Generator from "./pages/Generator";
 import Results from "./pages/Results";
+import HorariosGenerados from "./pages/HorariosGenerados";
+import HorarioDetalle from "./pages/HorarioDetalle";
 
 const router = createBrowserRouter([
     {
@@ -21,6 +23,14 @@ const router = createBrowserRouter([
     {
         path: "/results",
         element: <Results />
+    },
+    {
+        path: "/horarios",
+        element: <HorariosGenerados />
+    },
+    {
+        path: "/horarios/:id",
+        element: <HorarioDetalle />
     }
 ]);
 

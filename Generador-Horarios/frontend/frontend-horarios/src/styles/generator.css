@@ -1,0 +1,363 @@
+.generator-page{
+
+    width:min(1200px,92%);
+
+    margin:50px auto 80px;
+
+    animation:fadeUp .5s ease;
+
+}
+
+.generator-hero{
+
+    text-align:center;
+
+    margin-bottom:45px;
+
+}
+
+.generator-hero h1{
+
+    font-size:48px;
+
+    font-weight:800;
+
+    color:var(--color-texto);
+
+    margin-bottom:18px;
+
+    line-height:1.2;
+
+}
+
+.generator-hero p{
+
+    max-width:780px;
+
+    margin:auto;
+
+    color:#64748b;
+
+    font-size:18px;
+
+    line-height:1.8;
+
+}
+
+.generator-stats{
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:28px;
+
+    margin-bottom:45px;
+
+}
+
+.generator-stat{
+
+    background:white;
+
+    border-radius:24px;
+
+    padding:35px;
+
+    text-align:center;
+
+    border:1px solid #e2e8f0;
+
+    box-shadow:0 15px 40px rgba(15,23,42,.06);
+
+    transition:.30s;
+
+}
+
+.generator-stat:hover{
+
+    transform:translateY(-8px);
+
+    box-shadow:0 25px 45px rgba(37,99,235,.12);
+
+}
+
+.generator-stat-number{
+
+    font-size:48px;
+
+    font-weight:800;
+
+    color:var(--color-primario);
+
+    margin-bottom:12px;
+
+}
+
+.generator-stat-title{
+
+    font-size:16px;
+
+    color:#64748b;
+
+    font-weight:600;
+
+}
+
+.generator-config{
+
+    margin-top:35px;
+
+}
+
+.generator-config>.course-form{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:30px;
+
+}
+
+.generator-config .card{
+
+    width:100%;
+
+    border-radius:26px;
+
+    padding:35px;
+
+}
+
+.generator-config .card-header{
+
+    justify-content:center;
+
+    margin-bottom:25px;
+
+}
+
+.generator-config .card-title{
+
+    font-size:30px;
+
+}
+
+.checkbox-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+    gap:18px;
+
+    margin-top:10px;
+
+}
+
+.checkbox-card{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    padding:18px;
+
+    border:2px solid #e2e8f0;
+
+    border-radius:18px;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    background:white;
+
+}
+
+.checkbox-card:hover{
+
+    border-color:var(--color-primario);
+
+    background:#eff6ff;
+
+    transform:translateY(-3px);
+
+}
+
+.checkbox-card input{
+
+    width:18px;
+
+    height:18px;
+
+    cursor:pointer;
+
+}
+
+.checkbox-card span{
+
+    font-weight:600;
+
+    color:var(--color-texto);
+
+}
+
+.generator-error{
+
+    max-width:800px;
+
+    margin:0 auto 30px;
+
+    padding:18px 24px;
+
+    background:#fef2f2;
+
+    border-left:6px solid #ef4444;
+
+    border-radius:16px;
+
+    color:#b91c1c;
+
+    font-weight:600;
+
+}
+
+.generator-loading{
+
+    margin-top:40px;
+
+    background:white;
+
+    border-radius:24px;
+
+    padding:45px;
+
+    text-align:center;
+
+    border:1px solid #e2e8f0;
+
+    box-shadow:0 15px 40px rgba(15,23,42,.06);
+
+}
+
+.loading-spinner{
+
+    width:60px;
+
+    height:60px;
+
+    margin:auto auto 25px;
+
+    border:6px solid #dbeafe;
+
+    border-top:6px solid var(--color-primario);
+
+    border-radius:50%;
+
+    animation:spin 1s linear infinite;
+
+}
+
+.generator-loading h3{
+
+    font-size:24px;
+
+    color:var(--color-texto);
+
+    margin-bottom:10px;
+
+}
+
+.generator-loading p{
+
+    color:#64748b;
+
+    font-size:16px;
+
+}
+
+@keyframes spin{
+
+    from{
+
+        transform:rotate(0deg);
+
+    }
+
+    to{
+
+        transform:rotate(360deg);
+
+    }
+
+}
+
+@media(max-width:1000px){
+
+    .generator-stats{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .generator-hero h1{
+
+        font-size:38px;
+
+    }
+
+}
+
+@media(max-width:768px){
+
+    .generator-page{
+
+        width:95%;
+
+    }
+
+    .generator-hero h1{
+
+        font-size:30px;
+
+    }
+
+    .generator-hero p{
+
+        font-size:16px;
+
+    }
+
+    .checkbox-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .generator-config .card{
+
+        padding:25px;
+
+    }
+
+}
+
+@media(max-width:500px){
+
+    .generator-stat{
+
+        padding:25px;
+
+    }
+
+    .generator-stat-number{
+
+        font-size:38px;
+
+    }
+
+}

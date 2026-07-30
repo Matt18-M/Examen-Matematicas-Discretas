@@ -1,106 +1,331 @@
-function CourseTable({ courses,onEditar,onEliminar }){
+function CourseTable({ courses, onEditar, onEliminar }) {
 
-    return(
+    const eliminarMateria = (id, nombre) => {
+
+        const confirmar = window.confirm(
+
+            `¿Está seguro de eliminar la materia "${nombre}"?`
+
+        );
+
+        if (confirmar) {
+
+            onEliminar(id);
+
+        }
+
+    };
+
+    const obtenerClaseDificultad = (difficulty) => {
+
+        switch (difficulty) {
+
+            case "Alta":
+
+                return "badge badge-danger";
+
+            case "Media":
+
+                return "badge badge-warning";
+
+            default:
+
+                return "badge badge-success";
+
+        }
+
+    };
+
+    const obtenerClaseModalidad = (modality) => {
+
+        return modality === "Virtual"
+
+            ? "badge badge-primary"
+
+            : "badge badge-success";
+
+    };
+
+    return (
 
         <>
 
-            <h2>Materias Registradas</h2>
+            <div className="table-header">
 
-            <table className="course-table">
+                <div>
 
-                <thead>
+                    <span className="table-badge">
 
-                    <tr>
+                        Materias
 
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Día</th>
-                        <th>Horario</th>
-                        <th>Modalidad</th>
-                        <th>Créditos</th>
-                        <th>Acciones</th>
+                    </span>
 
-                    </tr>
+                    <h2>
 
-                </thead>
+                        Materias Registradas
 
-                <tbody>
+                    </h2>
 
-                    {
+                    <p>
 
-                        courses.length===0 ?
+                        Administre todas las materias utilizadas por el
+                        algoritmo para generar horarios.
 
-                        (
+                    </p>
 
-                            <tr>
+                </div>
 
-                                <td colSpan="7">
+                <div className="table-counter">
 
-                                    No existen materias registradas.
+                    <span>
 
-                                </td>
+                        {courses.length}
 
-                            </tr>
+                    </span>
 
-                        )
+                    <small>
 
-                        :
+                        Registros
 
-                        (
+                    </small>
 
-                            courses.map(course=>(
+                </div>
 
-                                <tr key={course.id}>
+            </div>
 
-                                    <td>{course.id}</td>
+            <div className="table-responsive">
 
-                                    <td>{course.name}</td>
+                <table className="course-table">
 
-                                    <td>{course.day}</td>
+                    <thead>
 
-                                    <td>
+                        <tr>
 
-                                        {course.startTime} - {course.endTime}
+                            <th>Materia</th>
 
-                                    </td>
+                            <th>Día</th>
 
-                                    <td>{course.modality}</td>
+                            <th>Horario</th>
 
-                                    <td>{course.credits}</td>
+                            <th>Modalidad</th>
 
-                                    <td className="actions">
+                            <th>Dificultad</th>
 
-                                        <button
-                                            className="btn-edit"
-                                            onClick={()=>onEditar(course)}
-                                        >
+                            <th>Créditos</th>
 
-                                            Editar
+                            <th>Prerrequisitos</th>
 
-                                        </button>
+                            <th>Acciones</th>
 
-                                        <button
-                                            className="btn-delete"
-                                            onClick={()=>onEliminar(course.id)}
-                                        >
+                        </tr>
 
-                                            Eliminar
+                    </thead>
 
-                                        </button>
+                    <tbody>
+
+                        {
+
+                            courses.length === 0 ? (
+
+                                <tr>
+
+                                    <td
+                                        colSpan="8"
+                                        className="empty-table"
+                                    >
+
+                                        <div className="empty-state">
+
+                                            <div className="empty-icon">
+
+                                                📚
+
+                                            </div>
+
+                                            <h3>
+
+                                                No existen materias registradas
+
+                                            </h3>
+
+                                            <p>
+
+                                                Agregue una materia utilizando
+                                                el formulario superior.
+
+                                            </p>
+
+                                        </div>
 
                                     </td>
 
                                 </tr>
 
-                            ))
+                            ) : (
 
-                        )
+                                courses.map(course => (
 
-                    }
+                                    <tr
+                                        key={course.id}
+                                    >
 
-                </tbody>
+                                        <td>
 
-            </table>
+                                            <strong>
+
+                                                {course.name}
+
+                                            </strong>
+
+                                        </td>
+
+                                        <td>
+
+                                            {course.day}
+
+                                        </td>
+
+                                        <td>
+
+                                            {course.startTime}
+
+                                            <br />
+
+                                            <small>
+
+                                                {course.endTime}
+
+                                            </small>
+
+                                        </td>
+
+                                        <td>
+
+                                            <span
+
+                                                className={
+
+                                                    obtenerClaseModalidad(
+
+                                                        course.modality
+
+                                                    )
+
+                                                }
+
+                                            >
+
+                                                {course.modality}
+
+                                            </span>
+
+                                        </td>
+
+                                        <td>
+
+                                            <span
+
+                                                className={
+
+                                                    obtenerClaseDificultad(
+
+                                                        course.difficulty
+
+                                                    )
+
+                                                }
+
+                                            >
+
+                                                {course.difficulty}
+
+                                            </span>
+
+                                        </td>
+
+                                        <td>
+
+                                            <strong>
+
+                                                {course.credits}
+
+                                            </strong>
+
+                                        </td>
+
+                                        <td>
+
+                                            {
+
+                                                course.prerequisites.length > 0
+
+                                                    ? course.prerequisites.join(", ")
+
+                                                    : "-"
+
+                                            }
+
+                                        </td>
+
+                                        <td>
+
+                                            <div className="actions">
+
+                                                <button
+
+                                                    className="btn-edit"
+
+                                                    onClick={() =>
+
+                                                        onEditar(course)
+
+                                                    }
+
+                                                >
+
+                                                    ✏️ Editar
+
+                                                </button>
+
+                                                <button
+
+                                                    className="btn-delete"
+
+                                                    onClick={() =>
+
+                                                        eliminarMateria(
+
+                                                            course.id,
+
+                                                            course.name
+
+                                                        )
+
+                                                    }
+
+                                                >
+
+                                                    🗑 Eliminar
+
+                                                </button>
+
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+
+                                ))
+
+                            )
+
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </>
 

@@ -1,86 +1,262 @@
 import { useState } from "react";
 
-function ConfigForm({ courses,onGenerar }){
+function ConfigForm({ courses, onGenerar }) {
 
-    const [selectedCourses,setSelectedCourses]=useState([]);
-    const [maxCredits,setMaxCredits]=useState(30);
-    const [modality,setModality]=useState("Todas");
-    const [freeDays,setFreeDays]=useState([]);
+    const [nombreHorario, setNombreHorario] = useState("");
 
-    const dias=["Lunes","Martes","Miércoles","Jueves","Viernes"];
+    const [config, setConfig] = useState({
 
-    const seleccionarMateria=(id)=>{
+        numberOfCourses: 5,
+        maximumCredits: 24,
+        maximumDifficultCourses: 2,
+        requiredCourses: [],
+        requiredModality: "",
+        avoidTimeConflicts: true,
+        validatePrerequisites: true,
+        completedCourses: []
 
-        if(selectedCourses.includes(id)){
+    });
 
-            setSelectedCourses(selectedCourses.filter(course=>course!==id));
+    const handleChange = ({ target }) => {
 
-        }
+        const { name, value, type, checked } = target;
 
-        else{
+        setConfig((prev) => ({
 
-            setSelectedCourses([...selectedCourses,id]);
+            ...prev,
 
-        }
+            [name]:
 
-    };
+                type === "checkbox"
+                    ? checked
+                    : type === "number"
+                        ? Number(value)
+                        : value
 
-    const seleccionarDia=(dia)=>{
-
-        if(freeDays.includes(dia)){
-
-            setFreeDays(freeDays.filter(item=>item!==dia));
-
-        }
-
-        else{
-
-            setFreeDays([...freeDays,dia]);
-
-        }
+        }));
 
     };
 
-    const handleSubmit=(e)=>{
+    const toggleArrayValue = (field, value) => {
+
+        setConfig((prev) => ({
+
+            ...prev,
+
+            [field]:
+
+                prev[field].includes(value)
+
+                    ? prev[field].filter(item => item !== value)
+
+                    : [...prev[field], value]
+
+        }));
+
+    };
+
+    const handleSubmit = (e) => {
 
         e.preventDefault();
 
+        if (!nombreHorario.trim()) {
+
+            alert("Ingrese un nombre para el horario.");
+
+            return;
+
+        }
+
         onGenerar({
 
-            selectedCourses,
-            maxCredits:Number(maxCredits),
-            modality,
-            freeDays
+            nombreHorario,
+            configuracion: {
+                ...config,
+                numberOfCourses: config.requiredCourses.length
+            }
 
         });
 
     };
 
-    return(
+    return (
 
-        <div className="card">
+        <form
+            className="course-form"
+            onSubmit={handleSubmit}
+        >
 
-            <h2>Configuración del Horario</h2>
+            <div className="card">
 
-            <form onSubmit={handleSubmit}>
+                <div className="card-header">
 
-                <h3>Seleccione las materias</h3>
+                    <h2 className="card-title">
+                        Información General
+                    </h2>
 
-                <div className="checkbox-group">
+                </div>
+
+                <div className="form-grid">
+
+                    <div className="form-group">
+                        <label>
+                            Nombre del horario
+                        </label>
+
+                        <input
+
+                            type="text"
+                            placeholder="Ej. Sexto Semestre A"
+                            value={nombreHorario}
+                            onChange={(e) =>
+                                setNombreHorario(e.target.value)
+                            }
+
+                        />
+
+                    </div>
+
+                    <div className="form-group">
+                        <label> Modalidad </label>
+
+                        <select
+
+                            name="requiredModality"
+                            value={config.requiredModality}
+                            onChange={handleChange} >
+
+                            <option value=""> Todas </option>
+
+                            <option value="Presencial"> Presencial </option>
+
+                            <option value="Virtual"> Virtual </option>
+
+                            <option value="Híbrida"> Híbrida </option>
+
+                        </select>
+
+                    </div>
+
+                    
+                    <div className="form-group">
+
+                        <label> Máximo de créditos </label>
+
+                        <input
+
+                            type="number"
+                            name="maximumCredits"
+                            value={config.maximumCredits}
+                            onChange={handleChange}
+                        />
+
+                    </div>
+
+                    <div className="form-group">
+
+                        <label> Máximo de materias difíciles </label>
+
+                        <input
+
+                            type="number"
+                            name="maximumDifficultCourses"
+                            value={config.maximumDifficultCourses}
+                            onChange={handleChange}
+                        />
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div
+                className="card"
+                style={{ marginTop: "25px" }}
+            >
+
+                <div className="card-header">
+
+                    <h2 className="card-title">
+                        Seleccione las materias que desea incluir en el horario.
+                    </h2>
+
+                </div>
+
+                <div className="checkbox-grid">
 
                     {
 
-                        courses.map(course=>(
+                        courses.map(course => (
 
-                            <label key={course.id}>
+                            <label
+                                key={course.id}
+                                className="checkbox-card"
+                            >
 
                                 <input
+
                                     type="checkbox"
-                                    checked={selectedCourses.includes(course.id)}
-                                    onChange={()=>seleccionarMateria(course.id)}
+                                    checked={
+                                        config.requiredCourses.includes(
+                                            course.name)
+                                    } onChange={() => toggleArrayValue(
+
+                                            "requiredCourses",
+                                            course.name
+                                        )
+                                    }
                                 />
 
-                                {course.name} ({course.credits} créditos)
+
+                                <span>
+                                    {course.name}
+                                </span>
+
+                            </label>
+
+                        ))
+                    }
+                </div>
+            </div>
+
+
+            <div
+                className="card"
+                style={{ marginTop: "25px" }}
+            >
+
+                <div className="card-header">
+
+                    <h2 className="card-title">
+                        Materias Aprobadas
+                    </h2>
+
+                </div>
+
+                <div className="checkbox-grid">
+
+                    {courses.map(course => (
+                            <label
+                                key={course.id}
+                                className="checkbox-card">
+                                <input
+                                    type="checkbox"
+                                    checked={
+                                        config.completedCourses.includes(
+                                            course.name
+                                        )
+                                    } onChange={() =>
+                                        toggleArrayValue("completedCourses",course.name)
+                                    }
+
+                                />
+
+                                <span>
+
+                                    {course.name}
+
+                                </span>
 
                             </label>
 
@@ -90,67 +266,93 @@ function ConfigForm({ courses,onGenerar }){
 
                 </div>
 
-                <h3>Modalidad</h3>
+            </div>
 
-                <select
-                    value={modality}
-                    onChange={(e)=>setModality(e.target.value)}
-                >
+            <div
+                className="card"
+                style={{ marginTop: "25px" }}
+            >
 
-                    <option>Todas</option>
-                    <option>Presencial</option>
-                    <option>Virtual</option>
+                <div className="card-header">
 
-                </select>
+                    <h2 className="card-title">
 
-                <h3>Máximo de créditos</h3>
+                        Restricciones
 
-                <input
-                    type="number"
-                    min="1"
-                    max="40"
-                    value={maxCredits}
-                    onChange={(e)=>setMaxCredits(e.target.value)}
-                />
-
-                <h3>Días libres</h3>
-
-                <div className="checkbox-group">
-
-                    {
-
-                        dias.map(dia=>(
-
-                            <label key={dia}>
-
-                                <input
-                                    type="checkbox"
-                                    checked={freeDays.includes(dia)}
-                                    onChange={()=>seleccionarDia(dia)}
-                                />
-
-                                {dia}
-
-                            </label>
-
-                        ))
-
-                    }
+                    </h2>
 
                 </div>
+
+                <div className="checkbox-grid">
+
+                    <label className="checkbox-card">
+
+                        <input
+
+                            type="checkbox"
+
+                            name="avoidTimeConflicts"
+
+                            checked={config.avoidTimeConflicts}
+
+                            onChange={handleChange}
+
+                        />
+
+                        <span>
+
+                            Evitar cruces de horario
+
+                        </span>
+
+                    </label>
+
+                    <label className="checkbox-card">
+
+                        <input
+
+                            type="checkbox"
+
+                            name="validatePrerequisites"
+
+                            checked={config.validatePrerequisites}
+
+                            onChange={handleChange}
+
+                        />
+
+                        <span>
+
+                            Validar prerrequisitos
+
+                        </span>
+
+                    </label>
+
+                </div>
+
+            </div>
+
+            <div
+                className="form-actions"
+                style={{ marginTop: "35px" }}
+            >
 
                 <button
+
                     className="btn btn-primary"
+
                     type="submit"
+
                 >
 
                     Generar Horarios
 
                 </button>
 
-            </form>
+            </div>
 
-        </div>
+        </form>
 
     );
 

@@ -2,9 +2,12 @@ import { NavLink } from "react-router-dom";
 
 import "../styles/navbar.css";
 
-function Navbar(){
+function Navbar() {
 
-    return(
+    const getNavClass = ({ isActive }) =>
+        isActive ? "active" : "";
+
+    return (
 
         <nav className="navbar">
 
@@ -12,19 +15,39 @@ function Navbar(){
 
                 <div className="logo">
 
-                    📅 Generador de Horarios
+                    Generador de Horarios
 
                 </div>
 
                 <div className="menu">
 
-                    <NavLink to="/">Inicio</NavLink>
+                    <NavLink
+                        to="/"
+                        className={getNavClass}
+                    >
+                        Inicio
+                    </NavLink>
 
-                    <NavLink to="/courses">Materias</NavLink>
+                    <NavLink
+                        to="/courses"
+                        className={getNavClass}
+                    >
+                        Materias
+                    </NavLink>
 
-                    <NavLink to="/generator">Generador</NavLink>
+                    <NavLink
+                        to="/generator"
+                        className={getNavClass}
+                    >
+                        Generar
+                    </NavLink>
 
-                    <NavLink to="/results">Resultados</NavLink>
+                    <NavLink
+                        to="/horarios"
+                        className={getNavClass}
+                    >
+                        Historial
+                    </NavLink>
 
                 </div>
 

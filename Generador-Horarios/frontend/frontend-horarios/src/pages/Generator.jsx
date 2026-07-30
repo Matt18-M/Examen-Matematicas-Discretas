@@ -1,110 +1,261 @@
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Navbar from "../components/Navbar";
 import ConfigForm from "../components/ConfigForm";
-
 import api from "../services/api";
 
-function Generator(){
+import { guardarHistorial } from "../utils/history";
 
-    const [courses,setCourses]=useState([]);
+import "../styles/generator.css";
 
-    const navigate=useNavigate();
+function Generator() {
 
-    const obtenerMaterias=async()=>{
+    const [courses, setCourses] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
-        try{
+    const navigate = useNavigate();
 
-            const respuesta=await api.get("/courses");
+    useEffect(() => {
 
-            setCourses(respuesta.data);
+        const cargarMaterias = async () => {
+
+            try {
+
+                const { data } = await api.get("/courses");
+
+                setCourses(data);
+
+            }
+
+            catch (error) {
+
+                console.error(error);
+
+                setError("No fue posible cargar las materias.");
+
+            }
+
+        };
+
+        cargarMaterias();
+
+    }, []);
+
+    const generarHorarios = async ({ nombreHorario, configuracion }) => {
+
+        if (!nombreHorario.trim()) {
+
+            setError("Debe ingresar un nombre para el horario.");
+
+            return;
 
         }
 
-        catch(error){
+        setLoading(true);
+
+        setError("");
+
+        try {
+
+            const { data } = await api.post(
+
+                "/scheduler/schedules/generate",
+
+                configuracion
+
+            );
+
+            guardarHistorial(
+
+                nombreHorario.trim(),
+
+                data
+
+            );
+
+            navigate("/results", {
+
+                state: {
+
+                    ...data,
+
+                    nombre: nombreHorario.trim()
+
+                }
+
+            });
+
+        }
+
+        catch (error) {
 
             console.error(error);
+
+            setError(
+
+                error.response?.data?.message ??
+
+                "No fue posible generar los horarios."
+
+            );
+
+        }
+
+        finally {
+
+            setLoading(false);
 
         }
 
     };
 
-    useEffect(()=>{
+    const totalCreditos = courses.reduce(
 
-        obtenerMaterias();
+        (total, course) => total + course.credits,
 
-    },[]);
+        0
 
-    const generarHorarios=(config)=>{
-
-    let materias=courses.filter(course=>
-        config.selectedCourses.includes(course.id)
     );
 
-    if(config.modality!=="Todas"){
+    const virtuales = courses.filter(
 
-        materias=materias.filter(course=>
-            course.modality===config.modality
-        );
+        course => course.modality === "Virtual"
 
-    }
+    ).length;
 
-    let creditos=0;
-
-    const horario=[];
-
-    materias.forEach(course=>{
-
-        if(config.freeDays.includes(course.day)) return;
-
-        if(creditos+course.credits<=config.maxCredits){
-
-            horario.push(course);
-
-            creditos+=course.credits;
-
-        }
-
-    });
-
-    const schedules=[horario];
-
-    localStorage.setItem(
-        "generatedSchedules",
-        JSON.stringify(schedules)
-    );
-
-    navigate("/results");
-
-};
-
-    return(
+    return (
 
         <>
 
-            <Navbar/>
+            <Navbar />
 
-            <div className="courses-container">
+            <main className="generator-page">
 
-                <div className="page-header">
+                <section className="generator-hero">
 
-                    <h1>Generador de Horarios</h1>
+                    <h1>
+
+                        Generador Inteligente de Horarios
+
+                    </h1>
 
                     <p>
 
-                        Configure sus preferencias y genere un horario automáticamente.
+                        Configure las restricciones y permita que el algoritmo
+                        genere automáticamente todas las combinaciones válidas
+                        de horarios para su semestre.
 
                     </p>
 
-                </div>
+                </section>
 
-                <ConfigForm
-                    courses={courses}
-                    onGenerar={generarHorarios}
-                />
+                {
 
-            </div>
+                    error && (
+
+                        <div className="generator-error">
+
+                            {error}
+
+                        </div>
+
+                    )
+
+                }
+
+                <section className="generator-stats">
+
+                    <div className="generator-stat">
+
+                        <div className="generator-stat-number">
+
+                            {courses.length}
+
+                        </div>
+
+                        <div className="generator-stat-title">
+
+                            Materias Disponibles
+
+                        </div>
+
+                    </div>
+
+                    <div className="generator-stat">
+
+                        <div className="generator-stat-number">
+
+                            {virtuales}
+
+                        </div>
+
+                        <div className="generator-stat-title">
+
+                            Materias Virtuales
+
+                        </div>
+
+                    </div>
+
+                    <div className="generator-stat">
+
+                        <div className="generator-stat-number">
+
+                            {totalCreditos}
+
+                        </div>
+
+                        <div className="generator-stat-title">
+
+                            Créditos Totales
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+                <section className="generator-config">
+
+                    <ConfigForm
+
+                        courses={courses}
+
+                        onGenerar={generarHorarios}
+
+                    />
+
+                </section>
+
+                {
+
+                    loading && (
+
+                        <section className="generator-loading">
+
+                            <div className="loading-spinner"></div>
+
+                            <h3>
+
+                                Generando horarios...
+
+                            </h3>
+
+                            <p>
+
+                                Analizando todas las combinaciones posibles.
+
+                            </p>
+
+                        </section>
+
+                    )
+
+                }
+
+            </main>
 
         </>
 

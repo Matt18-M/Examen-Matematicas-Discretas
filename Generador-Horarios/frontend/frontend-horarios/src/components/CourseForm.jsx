@@ -1,76 +1,118 @@
 import { useEffect, useState } from "react";
 
-function CourseForm({ onGuardar,onActualizar,courseEdit }){
+function CourseForm({ onGuardar, onActualizar, courseEdit }) {
 
-    const estadoInicial={
-        name:"",
-        day:"Lunes",
-        startTime:"",
-        endTime:"",
-        modality:"Presencial",
-        difficulty:"Media",
-        credits:"",
-        prerequisites:""
+    const estadoInicial = {
+
+        name: "",
+        day: "Lunes",
+        startTime: "",
+        endTime: "",
+        modality: "Presencial",
+        difficulty: "Media",
+        credits: 1,
+        prerequisites: ""
+
     };
 
-    const [formData,setFormData]=useState(estadoInicial);
+    const [formData, setFormData] = useState(estadoInicial);
 
-    useEffect(()=>{
+    useEffect(() => {
 
-        if(courseEdit){
-
-            setFormData({
-
-                name:courseEdit.name,
-                day:courseEdit.day,
-                startTime:courseEdit.startTime,
-                endTime:courseEdit.endTime,
-                modality:courseEdit.modality,
-                difficulty:courseEdit.difficulty,
-                credits:courseEdit.credits,
-                prerequisites:Array.isArray(courseEdit.prerequisites)
-                    ? courseEdit.prerequisites.join(", ")
-                    : ""
-
-            });
-
-        }
-
-        else{
+        if (!courseEdit) {
 
             setFormData(estadoInicial);
 
+            return;
+
         }
 
-    },[courseEdit]);
+        setFormData({
 
-    const handleChange=(e)=>{
+            name: courseEdit.name,
+            day: courseEdit.day,
+            startTime: courseEdit.startTime,
+            endTime: courseEdit.endTime,
+            modality: courseEdit.modality,
+            difficulty: courseEdit.difficulty,
+            credits: courseEdit.credits,
 
-        const {name,value}=e.target;
+            prerequisites: Array.isArray(courseEdit.prerequisites)
 
-        setFormData(prev=>({
+                ? courseEdit.prerequisites.join(", ")
+
+                : ""
+
+        });
+
+    }, [courseEdit]);
+
+    const handleChange = ({ target }) => {
+
+        const { name, value } = target;
+
+        setFormData(prev => ({
 
             ...prev,
 
-            [name]:value
+            [name]: value
 
         }));
 
     };
 
-    const handleSubmit=async(e)=>{
+    const handleSubmit = async (e) => {
 
         e.preventDefault();
 
-        if(courseEdit){
+        if (formData.startTime >= formData.endTime) {
 
-            await onActualizar(formData);
+            alert("La hora de inicio debe ser menor que la hora de fin.");
+
+            return;
 
         }
 
-        else{
+        if (Number(formData.credits) <= 0) {
 
-            await onGuardar(formData);
+            alert("Los créditos deben ser mayores a cero.");
+
+            return;
+
+        }
+
+        const course = {
+
+            ...formData,
+
+            name: formData.name.trim(),
+
+            credits: Number(formData.credits),
+
+            prerequisites: formData.prerequisites
+                .split(",")
+                .map(item => item.trim())
+                .filter(item => item.length > 0)
+
+        };
+
+        if (!course.name) {
+
+            alert("Ingrese un nombre para la materia.");
+
+            return;
+
+        }
+
+        if (courseEdit) {
+
+            await onActualizar(course);
+
+        }
+
+        else {
+
+            await onGuardar(course);
 
         }
 
@@ -78,123 +120,229 @@ function CourseForm({ onGuardar,onActualizar,courseEdit }){
 
     };
 
-    return(
+    return (
 
-        <>
+        <form
+            className="course-form"
+            onSubmit={handleSubmit}
+        >
 
-            <h2>
+            <div className="section-title">
 
-                {courseEdit ? "Editar Materia" : "Nueva Materia"}
+                <span>
 
-            </h2>
+                    📚 Gestión Académica
 
-            <form className="course-form" onSubmit={handleSubmit}>
+                </span>
 
-                <label>Nombre</label>
+                <h2>
 
-                <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                />
+                    {
 
-                <label>Día</label>
+                        courseEdit
 
-                <select
-                    name="day"
-                    value={formData.day}
-                    onChange={handleChange}
-                >
+                            ? "Editar Materia"
 
-                    <option>Lunes</option>
-                    <option>Martes</option>
-                    <option>Miércoles</option>
-                    <option>Jueves</option>
-                    <option>Viernes</option>
+                            : "Registrar Nueva Materia"
 
-                </select>
+                    }
 
-                <label>Hora Inicio</label>
+                </h2>
 
-                <input
-                    type="time"
-                    name="startTime"
-                    value={formData.startTime}
-                    onChange={handleChange}
-                    required
-                />
+                <p>
 
-                <label>Hora Fin</label>
+                    Complete toda la información necesaria para que el
+                    algoritmo pueda generar horarios correctamente.
 
-                <input
-                    type="time"
-                    name="endTime"
-                    value={formData.endTime}
-                    onChange={handleChange}
-                    required
-                />
+                </p>
 
-                <label>Modalidad</label>
+            </div>
 
-                <select
-                    name="modality"
-                    value={formData.modality}
-                    onChange={handleChange}
-                >
+            <div className="form-grid">
 
-                    <option>Presencial</option>
-                    <option>Virtual</option>
+                <div className="form-group">
 
-                </select>
+                    <label>
 
-                <label>Dificultad</label>
+                        Nombre de la materia
 
-                <select
-                    name="difficulty"
-                    value={formData.difficulty}
-                    onChange={handleChange}
-                >
+                    </label>
 
-                    <option>Baja</option>
-                    <option>Media</option>
-                    <option>Alta</option>
+                    <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        placeholder="Ej. Matemáticas Discretas"
+                        required
+                    />
 
-                </select>
+                </div>
 
-                <label>Créditos</label>
+                <div className="form-group">
 
-                <input
-                    type="number"
-                    name="credits"
-                    value={formData.credits}
-                    onChange={handleChange}
-                    required
-                />
+                    <label>
 
-                <label>Prerrequisitos</label>
+                        Día
 
-                <input
-                    type="text"
-                    name="prerequisites"
-                    value={formData.prerequisites}
-                    onChange={handleChange}
-                    placeholder="Separados por coma"
-                />
+                    </label>
+
+                    <select
+                        name="day"
+                        value={formData.day}
+                        onChange={handleChange}
+                    >
+
+                        <option>Lunes</option>
+                        <option>Martes</option>
+                        <option>Miércoles</option>
+                        <option>Jueves</option>
+                        <option>Viernes</option>
+
+                    </select>
+
+                </div>
+
+                <div className="form-group">
+
+                    <label>
+
+                        Hora de inicio
+
+                    </label>
+
+                    <input
+                        type="time"
+                        name="startTime"
+                        value={formData.startTime}
+                        onChange={handleChange}
+                        required
+                    />
+
+                </div>
+
+                <div className="form-group">
+
+                    <label>
+
+                        Hora de fin
+
+                    </label>
+
+                    <input
+                        type="time"
+                        name="endTime"
+                        value={formData.endTime}
+                        onChange={handleChange}
+                        required
+                    />
+
+                </div>
+
+                <div className="form-group">
+
+                    <label>
+
+                        Modalidad
+
+                    </label>
+
+                    <select
+                        name="modality"
+                        value={formData.modality}
+                        onChange={handleChange}
+                    >
+
+                        <option>Presencial</option>
+                        <option>Virtual</option>
+                        <option>Híbrida</option>
+
+                    </select>
+
+                </div>
+
+                <div className="form-group">
+
+                    <label>
+
+                        Dificultad
+
+                    </label>
+
+                    <select
+                        name="difficulty"
+                        value={formData.difficulty}
+                        onChange={handleChange}
+                    >
+
+                        <option>Baja</option>
+                        <option>Media</option>
+                        <option>Alta</option>
+
+                    </select>
+
+                </div>
+
+                <div className="form-group">
+
+                    <label>
+
+                        Créditos
+
+                    </label>
+
+                    <input
+                        type="number"
+                        min="1"
+                        name="credits"
+                        value={formData.credits}
+                        onChange={handleChange}
+                    />
+
+                </div>
+
+                <div className="form-group">
+
+                    <label>
+
+                        Prerrequisitos
+
+                    </label>
+
+                    <input
+                        type="text"
+                        name="prerequisites"
+                        value={formData.prerequisites}
+                        onChange={handleChange}
+                        placeholder="Ej. Álgebra, Programación I"
+                    />
+
+                </div>
+
+            </div>
+
+            <div className="form-actions">
 
                 <button
                     className="btn btn-primary"
                     type="submit"
                 >
 
-                    {courseEdit ? "Actualizar Materia" : "Guardar Materia"}
+                    {
+
+                        courseEdit
+
+                            ? "Actualizar Materia"
+
+                            : "Guardar Materia"
+
+                    }
 
                 </button>
 
-            </form>
+            </div>
 
-        </>
+        </form>
 
     );
 

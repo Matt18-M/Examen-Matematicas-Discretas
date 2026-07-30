@@ -1,20 +1,68 @@
 :root{
 
+    /* ===== COLORES PRINCIPALES ===== */
+
     --color-primario:#2563eb;
+    --color-primario-hover:#1d4ed8;
+
     --color-secundario:#3b82f6;
-    --color-acento:#60a5fa;
 
-    --color-fondo:#f4f7fb;
-    --color-blanco:#ffffff;
+    --color-acento:#38bdf8;
 
-    --color-texto:#1e293b;
+    --color-exito:#22c55e;
+    --color-exito-hover:#16a34a;
+
+    --color-error:#ef4444;
+    --color-error-hover:#dc2626;
+
+    --color-advertencia:#f59e0b;
+
+    /* ===== FONDOS ===== */
+
+    --color-fondo:#f4f8ff;
+
+    --color-superficie:#ffffff;
+
+    --color-card:#ffffff;
+
+    --color-borde:#e5e7eb;
+
+    /* ===== TEXTOS ===== */
+
+    --color-texto:#0f172a;
+
     --color-texto-secundario:#64748b;
 
-    --color-exito:#16a34a;
-    --color-error:#dc2626;
+    --color-texto-claro:#94a3b8;
 
-    --sombra:0 8px 25px rgba(0,0,0,.08);
+    /* ===== SOMBRAS ===== */
 
-    --radio:12px;
+    --sombra-xs:
+
+        0 2px 6px rgba(15,23,42,.04);
+
+    --sombra-sm:
+
+        0 8px 18px rgba(15,23,42,.06);
+
+    --sombra:
+
+        0 18px 40px rgba(15,23,42,.08);
+
+    --sombra-lg:
+
+        0 28px 60px rgba(15,23,42,.12);
+
+    /* ===== BORDES ===== */
+
+    --radio-sm:12px;
+
+    --radio:18px;
+
+    --radio-lg:28px;
+
+    /* ===== TRANSICIONES ===== */
+
+    --transition:.30s ease;
 
 }
