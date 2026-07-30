@@ -1,17 +1,23 @@
 import { Router } from "express";
 
 import { createScheduleConfigController, getScheduleConfigsController, getScheduleConfigByIdController, updateScheduleConfigController, deleteScheduleConfigController } from "../controllers/scheduleConfig.controller.js";
+import { validateConfig, validateId } from "../middlewares/validation.middleware.js";
 
 const router = Router();
 
-router.post("/", createScheduleConfigController);
+// Crear configuración
+router.post("/", validateConfig, createScheduleConfigController);
 
+// Obtener todas las configuraciones
 router.get("/", getScheduleConfigsController);
 
-router.get("/:id", getScheduleConfigByIdController);
+// Obtener configuración por ID
+router.get("/:id", validateId, getScheduleConfigByIdController);
 
-router.put("/:id", updateScheduleConfigController);
+// Actualizar configuración
+router.put("/:id", validateId, validateConfig, updateScheduleConfigController);
 
-router.delete("/:id", deleteScheduleConfigController);
+// Eliminar configuración
+router.delete("/:id", validateId, deleteScheduleConfigController);
 
 export default router;

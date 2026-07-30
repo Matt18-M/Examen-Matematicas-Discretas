@@ -1,17 +1,24 @@
 import { Router } from "express";
 
 import { createCourseController, getCoursesController, getCourseByIdController, updateCourseController, deleteCourseController } from "../controllers/course.controller.js";
+import { validateCourse, validateId } from "../middlewares/validation.middleware.js";
 
 const router = Router();
 
-router.post("/", createCourseController);
-
+// Obtener todos los cursos
 router.get("/", getCoursesController);
 
-router.get("/:id", getCourseByIdController);
+// Obtener un curso por ID
+router.get("/:id", validateId, getCourseByIdController);
 
-router.put("/:id", updateCourseController);
+// Crear un curso
+router.post("/", validateCourse, createCourseController);
 
-router.delete("/:id", deleteCourseController);
+// Actualizar un curso
+router.put("/:id", validateId, validateCourse, updateCourseController);
+
+// Eliminar un curso
+router.delete("/:id", validateId, deleteCourseController);
+
 
 export default router;
