@@ -102,19 +102,13 @@ function CourseTable({ courses, onEditar, onEliminar }) {
                         <tr>
 
                             <th>Materia</th>
-
+                            <th>Paralelo</th>
                             <th>Día</th>
-
                             <th>Horario</th>
-
                             <th>Modalidad</th>
-
                             <th>Dificultad</th>
-
                             <th>Créditos</th>
-
                             <th>Prerrequisitos</th>
-
                             <th>Acciones</th>
 
                         </tr>
@@ -130,7 +124,7 @@ function CourseTable({ courses, onEditar, onEliminar }) {
                                 <tr>
 
                                     <td
-                                        colSpan="8"
+                                        colSpan="9"
                                         className="empty-table"
                                     >
 
@@ -169,21 +163,31 @@ function CourseTable({ courses, onEditar, onEliminar }) {
                                         key={course.id}
                                     >
 
-                                        <td>
+                        <td>
 
-                                            <strong>
+                                <strong>
 
-                                                {course.name}
+                                    {course.name}
 
-                                            </strong>
+                                </strong>
 
-                                        </td>
+                            </td>
 
-                                        <td>
+                            <td>
 
-                                            {course.day}
+                                <span className="badge badge-primary">
 
-                                        </td>
+                                    {course.parallel}
+
+                                </span>
+
+                            </td>
+
+                            <td>
+
+                                {course.day}
+
+            </td>
 
                                         <td>
 

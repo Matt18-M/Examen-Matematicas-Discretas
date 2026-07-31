@@ -17,6 +17,7 @@ function ConfigForm({ courses, onGenerar }) {
 
     });
 
+
     const handleChange = ({ target }) => {
 
         const { name, value, type, checked } = target;
@@ -210,7 +211,20 @@ function ConfigForm({ courses, onGenerar }) {
 
 
                                 <span>
+
                                     {course.name}
+
+                                    <span
+                                        style={{
+                                            color: "#9ca3af",
+                                            fontSize: "14px",
+                                            fontWeight: "500",
+                                            marginLeft: "6px"
+                                        }}
+                                    >
+                                        ({course.parallel})
+                                    </span>
+
                                 </span>
 
                             </label>
@@ -236,7 +250,8 @@ function ConfigForm({ courses, onGenerar }) {
 
                 <div className="checkbox-grid">
 
-                    {courses.map(course => (
+                        {
+                        courses.map(course => (
                             <label
                                 key={course.id}
                                 className="checkbox-card">
@@ -254,9 +269,20 @@ function ConfigForm({ courses, onGenerar }) {
 
                                 <span>
 
-                                    {course.name}
+                                {course.name}
 
+                                <span
+                                    style={{
+                                        color: "#9ca3af",
+                                        fontSize: "14px",
+                                        fontWeight: "500",
+                                        marginLeft: "6px"
+                                    }}
+                                >
+                                    ({course.parallel})
                                 </span>
+
+                            </span>
 
                             </label>
 

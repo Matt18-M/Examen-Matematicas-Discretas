@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 function CourseForm({ onGuardar, onActualizar, courseEdit }) {
 
     const estadoInicial = {
-
         name: "",
+        parallel: "A",
         day: "Lunes",
         startTime: "",
         endTime: "",
@@ -12,7 +12,6 @@ function CourseForm({ onGuardar, onActualizar, courseEdit }) {
         difficulty: "Media",
         credits: 1,
         prerequisites: ""
-
     };
 
     const [formData, setFormData] = useState(estadoInicial);
@@ -36,6 +35,7 @@ function CourseForm({ onGuardar, onActualizar, courseEdit }) {
             modality: courseEdit.modality,
             difficulty: courseEdit.difficulty,
             credits: courseEdit.credits,
+            parallel: courseEdit.parallel,
 
             prerequisites: Array.isArray(courseEdit.prerequisites)
 
@@ -198,6 +198,30 @@ function CourseForm({ onGuardar, onActualizar, courseEdit }) {
                         <option>Miércoles</option>
                         <option>Jueves</option>
                         <option>Viernes</option>
+
+                    </select>
+
+                </div>
+
+                <div className="form-group">
+
+                    <label>
+
+                        Paralelo
+
+                    </label>
+
+                    <select
+                        name="parallel"
+                        value={formData.parallel}
+                        onChange={handleChange}
+                    >
+
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
 
                     </select>
 

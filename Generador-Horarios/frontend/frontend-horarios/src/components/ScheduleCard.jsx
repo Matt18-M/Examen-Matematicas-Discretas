@@ -122,19 +122,20 @@ function ScheduleCard({ schedule, number }) {
 
                     <thead>
 
-                        <tr>
+                    <tr>
 
-                            <th>Materia</th>
-                            <th>Día</th>
-                            <th>Inicio</th>
-                            <th>Fin</th>
-                            <th>Modalidad</th>
-                            <th>Créditos</th>
-                            <th>Dificultad</th>
+                        <th>Materia</th>
+                        <th>Paralelo</th>
+                        <th>Día</th>
+                        <th>Inicio</th>
+                        <th>Fin</th>
+                        <th>Modalidad</th>
+                        <th>Créditos</th>
+                        <th>Dificultad</th>
 
-                        </tr>
+                    </tr>
 
-                    </thead>
+                </thead>
 
                     <tbody>
 
@@ -147,6 +148,16 @@ function ScheduleCard({ schedule, number }) {
                                     <td>
 
                                         <strong>{course.name}</strong>
+
+                                    </td>
+
+                                    <td>
+
+                                        <span className="course-pill">
+
+                                            {course.parallel}
+
+                                        </span>
 
                                     </td>
 

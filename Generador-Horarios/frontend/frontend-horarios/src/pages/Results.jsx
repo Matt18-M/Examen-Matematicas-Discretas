@@ -43,12 +43,12 @@ function Results() {
 
     }
 
-    const primerHorario = data.schedules?.[0];
+    const horarios = data.schedules ?? [];
 
-    const materiasHorario = primerHorario?.materias ?? [];
+    const materiasHorario = horarios[0]?.materias ?? [];
 
-    const horarioValido = primerHorario?.evaluacion?.valido ?? false;
-
+    const horarioValido = horarios[0]?.evaluacion?.valido ?? false;
+    
     return (
 
         <>
@@ -371,15 +371,21 @@ function Results() {
 
                 {
 
-                    primerHorario && (
+                    horarios.length > 0 && (
 
-                        <ScheduleCard
+                        horarios.map((horario, index) => (
 
-                            number={1}
+                            <ScheduleCard
 
-                            schedule={primerHorario}
+                                key={index}
 
-                        />
+                                number={index + 1}
+
+                                schedule={horario}
+
+                            />
+
+                        ))
 
                     )
 
