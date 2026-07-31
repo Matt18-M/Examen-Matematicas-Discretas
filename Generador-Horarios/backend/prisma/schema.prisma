@@ -10,6 +10,7 @@ datasource db {
 model Course {
   id            Int      @id @default(autoincrement())
   name          String
+  parallel      String   @default("A")
   day           String
   startTime     String   @map("start_time")
   endTime       String   @map("end_time")

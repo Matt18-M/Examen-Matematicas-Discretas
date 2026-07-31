@@ -1,3 +1,5 @@
+import type { Course } from "../../generated/prisma/client.js";
+
 // Calcular factorial
 export const factorial = (n: number): number => {
     if (n <= 1) {
@@ -18,7 +20,7 @@ export const calcularNumeroCombinaciones = (n: number, r: number): number => {
 
 };
 
-// Generar todas las combinaciones
+// Generar todas las combinaciones (se mantiene igual)
 export const generarCombinaciones = <T>(items: T[], size: number): T[][] => {
 
     if (size === 0) {
@@ -50,5 +52,68 @@ export const generarCombinaciones = <T>(items: T[], size: number): T[][] => {
     });
 
     return combinaciones;
+
+};
+
+// Agrupar las materias por nombre
+export const agruparMateriasPorNombre = (
+    materias: Course[]
+): Course[][] => {
+
+    const grupos = new Map<string, Course[]>();
+
+    materias.forEach(materia => {
+
+        const grupo = grupos.get(materia.name);
+
+        if (grupo) {
+            grupo.push(materia);
+        } else {
+            grupos.set(materia.name, [materia]);
+        }
+
+    });
+
+    return [...grupos.values()];
+
+};
+
+// Generar todas las combinaciones posibles de paralelos
+export const generarCombinacionesParalelos = (
+    grupos: Course[][]
+): Course[][] => {
+
+    const resultado: Course[][] = [];
+
+    const backtracking = (
+        indice: number,
+        horarioActual: Course[]
+    ) => {
+
+        if (indice === grupos.length) {
+
+            resultado.push([...horarioActual]);
+
+            return;
+
+        }
+
+        const grupoActual = grupos[indice]!;
+
+        for (const paralelo of grupoActual) {
+
+            horarioActual.push(paralelo);
+
+            backtracking(indice + 1, horarioActual);
+
+            horarioActual.pop();
+
+        }
+
+    };
+
+    backtracking(0, []);
+
+    return resultado;
 
 };

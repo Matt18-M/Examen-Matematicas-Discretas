@@ -2,6 +2,7 @@ import prisma from "../config/prisma.js";
 
 export interface CreateCourseDTO {
     name: string;
+    parallel: string;
     day: string;
     startTime: string;
     endTime: string;

@@ -1,6 +1,6 @@
 import { type Request, type Response } from "express";
 
-import { calcularNumeroCombinaciones, generarCombinaciones } from "../algorithms/combinations.js";
+import { calcularNumeroCombinaciones, generarCombinaciones, agruparMateriasPorNombre, generarCombinacionesParalelos } from "../algorithms/combinations.js";
 import { crearConjunto, cardinalidad } from "../algorithms/sets.js";
 import { evaluarHorario } from "../algorithms/rules.js";
 import { obtenerDatosHorario } from "../services/scheduler.service.js";
@@ -121,7 +121,11 @@ export const generarCombinacionesMateriasController = async (req: Request, res: 
 
         const { materias } = await obtenerDatosHorario(numeroMaterias);
 
-        const combinaciones = generarCombinaciones(materias, numeroMaterias);
+        const grupos = agruparMateriasPorNombre(materias);
+
+        const combinaciones = generarCombinacionesParalelos(grupos).filter(
+            combinacion => combinacion.length === numeroMaterias
+        );
 
         res.status(200).json({
             materiasDisponibles: materias.length,
@@ -164,19 +168,27 @@ export const generarHorariosValidosController = async (req: Request, res: Respon
             return;
         }
 
-        const combinaciones = generarCombinaciones(materias, numeroMaterias);
+        const grupos = agruparMateriasPorNombre(materias);
+
+        const combinaciones = generarCombinacionesParalelos(grupos).filter(
+            combinacion => combinacion.length === numeroMaterias
+        );
 
         const horariosEvaluados = combinaciones.map(combinacion => ({
             materias: combinacion,
             evaluacion: evaluarHorario(combinacion, configuracion)
         }));
 
-        const horariosValidos = horariosEvaluados.filter(horario => horario.evaluacion.valido);
+        const horariosValidos = horariosEvaluados.filter(
+            horario => horario.evaluacion.valido
+        );
 
-        const horariosDescartados = horariosEvaluados.filter(horario => !horario.evaluacion.valido);
+        const horariosDescartados = horariosEvaluados.filter(
+            horario => !horario.evaluacion.valido
+        );
 
         res.status(200).json({
-            materiasDisponibles: materias.length,
+            materiasDisponibles: grupos.length,
             totalCombinaciones: combinaciones.length,
             totalHorariosValidos: horariosValidos.length,
             totalHorariosDescartados: horariosDescartados.length,
@@ -221,9 +233,13 @@ export const generarHorariosController = async (req: Request, res: Response): Pr
 
         const { materias } = await obtenerDatosHorario(numberOfCourses);
 
-        if (numberOfCourses > materias.length) {
+        const materiasSeleccionadas = materias.filter(
+            materia => requiredCourses.includes(materia.name)
+        );
+
+        if (materiasSeleccionadas.length === 0) {
             res.status(400).json({
-                message: "La cantidad solicitada supera el número de materias registradas."
+                message: "Debe seleccionar al menos una materia."
             });
             return;
         }
@@ -239,24 +255,41 @@ export const generarHorariosController = async (req: Request, res: Response): Pr
             validatePrerequisites: validatePrerequisites ?? true
         };
 
-        const combinaciones = generarCombinaciones(materias, numberOfCourses);
+        const grupos = agruparMateriasPorNombre(materiasSeleccionadas);
+
+        const combinaciones = generarCombinacionesParalelos(grupos);
 
         const horariosEvaluados = combinaciones.map(combinacion => ({
             materias: combinacion,
-            evaluacion: evaluarHorario(combinacion, configuracion, completedCourses ?? [])
+            evaluacion: evaluarHorario(
+                combinacion,
+                configuracion,
+                completedCourses ?? []
+            )
         }));
 
-        const horariosValidos = horariosEvaluados.filter(horario => horario.evaluacion.valido);
+        const horariosValidos = horariosEvaluados.filter(
+            horario => horario.evaluacion.valido
+        );
 
-        const horariosDescartados = horariosEvaluados.filter(horario => !horario.evaluacion.valido);
+        const horariosDescartados = horariosEvaluados.filter(
+            horario => !horario.evaluacion.valido
+        );
 
         res.status(200).json({
-            totalMaterias: materias.length,
-            materiasPorHorario: numberOfCourses,
+
+            totalMaterias: grupos.length,
+
+            materiasPorHorario: grupos.length,
+
             totalCombinaciones: combinaciones.length,
+
             horariosValidos: horariosValidos.length,
+
             horariosDescartados: horariosDescartados.length,
+
             schedules: horariosEvaluados
+
         });
 
     } catch (error) {

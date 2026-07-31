@@ -15,12 +15,30 @@ export const validateId = (req: Request, res: Response, next: NextFunction): voi
 };
 
 export const validateCourse = (req: Request, res: Response, next: NextFunction): void => {
-    const { name, day, startTime, endTime, modality, difficulty, credits, prerequisites } = req.body;
+    const {
+            name,
+            parallel,
+            day,
+            startTime,
+            endTime,
+            modality,
+            difficulty,
+            credits,
+            prerequisites
+        } = req.body;
 
     if (!name?.trim()) {
         res.status(400).json({
             success: false,
             message: "El nombre del curso es obligatorio."
+        });
+        return;
+    }
+
+        if (!parallel?.trim()) {
+        res.status(400).json({
+            success: false,
+            message: "El paralelo es obligatorio."
         });
         return;
     }
